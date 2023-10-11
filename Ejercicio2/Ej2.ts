@@ -1,95 +1,67 @@
 //PRACTICA 2 - Arquitectura y programación de sistemas en internet
 //Ejercicio 1
 //Jesús Cuesta Bartolomé
-/*
-export interface ResponseData {
-    statusCode:  number;
-    message:     string;
-    totalQuotes: null;
-    data:        Pokemon[];
+
+export interface ResponseData { 
+    statusCode:  number;            //Código de estado de la respuesta
+    message:     string;            //Mensaje de la respuesta
+    data:        Pokemon[];         //Array de ojetos Data que contienen los pokemons
 }   
 
-export interface Pokemon {
-    name: string;
-    data: Types[];
-    id: number;
+export interface Pokemon {          
+    name: string;                   //Nombre del pokemon
+    types: Types[];                 //Array de objetos Types que contienen los tipos del pokemon
+    id: number;                     //Id del pokemon
+    generation: string;             //Generación del pokemon
 }
 
 export interface Types {
-    name: string;
-}
-
-const select = prompt("Seleccione una opción: Buscar tipo [1] | Buscar pokemon [2]");
-console.log("Selección:", select);
-
-if (select === `1`){
-
-    console.log("Has seleccionado la opción 1");
-    
-    
-}
-else if (select === `2`){
-
-    console.log("Has seleccionado la opción 2");
-
-    const nombre = prompt("Escriba el nombre de un pokemon (en minúsculas): ");
-    console.log("Selección:", nombre);
-    console.log(nombre);
-
-    const printInfo = () => {
-        fetch(`https://pokeapi.co/api/v2/type/${nombre}`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return response.json();
-            })
-            .then((data: ResponseData) => {
-                console.log("Status:",data.statusCode);
-                data.data.forEach((pokemon: Pokemon) => {
-                    console.log(`Nombre: ${pokemon.name}`);
-                });
-            })
-            .catch((error) => console.log(error));
+    slot: number;                   //Slot del tipo
+    type: { 
+      name: string;                 //Nombre del tipo
+      url: string;                  //Url del tipo
     };
+  }
 
-    printInfo(); 
+const searchPokemon = async () => { //Función asíncrona que busca un pokemon o un tipo de pokemon y muestra sus datos por consola
 
+  try{
 
-}
-else {  
+    // Pregunta al usuario si quiere buscar un tipo de pokemon o un pokemon
+    const select = prompt("Seleccione una opción: Buscar tipo [1] | Buscar pokemon [2]");
+    console.log("Selección:", select);
 
-    console.log("Opción inválida");
-}
-*/
+    if (select === `1`){    //Si se selecciona la opción 1, se busca un tipo de pokemon
 
-import { prompt } from "https://deno.land/x/prompts/mod.ts";
+        const tipo = prompt("Escriba en inglés el tipo de pokemon que desea buscar (en minúsculas): "); //Pregunta al usuario el tipo de pokemon
+        const response = await fetch(`https://pokeapi.co/api/v2/type/${tipo}`);                         //Realiza una solicitud HTTP GET a la API para obeter los datos del tipo de pokemon
+        const data: Pokemon = await response.json();                                                    //Analiza la respuesta como JSON y asigna los datos a la variable data
+        console.log("Tipo:",data.name);                                                                 //Muestra por consola el nombre del tipo de pokemon
+        console.log("Generación:",data.generation);                                                     //Muestra por consola la generación del tipo de pokemo
+    
+    }
+    else if (select === `2`){   //Si se selecciona la opción 2, se busca un pokemon
 
-interface PokemonType {
-  name: string;
-}
+        const nombre = prompt("Escriba el nombre de un pokemon (en minúsculas): ");     //Pregunta al usuario el nombre del pokemon
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${nombre}`);    //Realiza una solicitud HTTP GET a la API para obeter los datos del pokemon
+        const data: Pokemon = await response.json();                                    //Analiza la respuesta como JSON y asigna los datos a la variable data
+        console.log("Nombre:",data.name);                                               //Muestra por consola el nombre del pokemon                                    
+        console.log("Id:",data.id);                                                     //Muestra por consola el id del pokemon                  
+        console.log("Tipos:");                                                          //Muestra por consola los tipos del pokemon
+        data.types.forEach((tipo: Types) => {                                           //Itero sobre el array de tipos y muestro por consola los datos de cada uno
+            console.log("-> ", tipo.type.name);
+        });
+    }
 
-interface Pokemon {
-  name: string;
-  types: PokemonType[];
-  id: number;
-}
-
-const printPokemonInfo = async (name: string) => {
-  try {
-    const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
-    const data: Pokemon = await response.json();
-    console.log(`Name: ${data.name}`);
-    console.log(`Type(s): ${data.types.map((type) => type.name).join(", ")}`);
-    console.log(`ID: ${data.id}`);
-  } catch (error) {
+    else {  
+        // Si no se selecciona ninguna de las opciones anteriores, se muestra un mensaje de error
+        console.log("Opción inválida");
+    }
+  }  
+  // En caso de error, lo muestro por consola
+  catch (error) {
     console.log("Error:", error);
   }
 };
 
-const main = async () => {
-  const name = await prompt({ message: "Enter the name of a Pokémon (in lowercase):" });
-  await printPokemonInfo(name);
-};
-
-main();
+await searchPokemon();  //Llamada a la función

@@ -4,7 +4,7 @@
 
 // Tipos de datos
 export interface ResponseData {
-    statusCode:  number;        //Cósigo de estado de la respuesta
+    statusCode:  number;        //Código de estado de la respuesta
     message:     string;        //Mensaje de la respuesta
     pagination:  Pagination;    //Paginación de la respuesta
     totalQuotes: null;          //Cantidad total de citas
