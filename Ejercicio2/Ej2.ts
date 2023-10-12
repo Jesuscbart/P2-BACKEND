@@ -1,5 +1,5 @@
 //PRACTICA 2 - Arquitectura y programación de sistemas en internet
-//Ejercicio 1
+//Ejercicio 2
 //Jesús Cuesta Bartolomé
 
 export interface ResponseData { 

@@ -3,12 +3,12 @@
 //Jesús Cuesta Bartolomé
 
 // Tipos
-export interface Book {
-    id: number;
-    title: string;
-    author: string;
-    pages: number;
-    genre: string;
+export interface Book { 
+    id: number;       //Id del libro
+    title: string;    //Título del libro
+    author: string;   //Autor del libro
+    pages: number;    //Número de páginas del libro
+    genre: string;    //Género del libro
 }
 
 const library: Book[] = []; // Inicializamos el array de libros vacío
